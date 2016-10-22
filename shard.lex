@@ -498,6 +498,9 @@ KEYWORD:
     'do'
     'while'
     'for'
+    'try'
+    'catch'
+    'throw'
 
 TOKEN:
     IDENTIFIER
