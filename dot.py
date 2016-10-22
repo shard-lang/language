@@ -17,10 +17,7 @@
 # ************************************************************************* #
 
 """
-Script which extracts a list of keywords from lexical description.
-
-Optional 'macro' argument can be passed which generates lines in format:
-  `KEYWORD(name, "Name")`
+Generate DOT output from description file.
 """
 
 import sys
