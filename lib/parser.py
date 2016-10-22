@@ -70,9 +70,7 @@ def parse(filename):
     filename: Path to source file.
     return: Description file structure.
     """
-    rules = {
-        '@CHARACTER': [[x] for x in list(string.ascii_lowercase) + list(string.ascii_uppercase)]
-    }
+    rules = {}
     ruleName = None
     ruleItems = None
 
