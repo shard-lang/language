@@ -24,9 +24,13 @@ Optional 'macro' argument can be passed which generates lines in format:
   `PUNCTUATOR(name, "punc")`
 """
 
+# ************************************************************************* #
+
 import sys
 import re
 from lib.parser import format_non_terminal, parse
+
+# ************************************************************************* #
 
 first_cap_re = re.compile('(.)([A-Z][a-z]+)')
 all_cap_re = re.compile('([a-z0-9])([A-Z])')
@@ -46,7 +50,7 @@ if len(sys.argv) > 1:
 tokens = []
 punctuators = []
 
-with open("shard.lex", 'r') as file:
+with open("shard-lex.def", 'r') as file:
     for line in file.readlines():
         line = line.strip()
 
@@ -67,7 +71,7 @@ for token in tokens:
         print(token)
 
 # Required for punctuator strings
-rules = parse("shard.lex")
+rules = parse("shard-lex.def")
 
 # Print punctuators
 for punctuator in punctuators:
@@ -76,3 +80,5 @@ for punctuator in punctuators:
         print("PUNCTUATOR({}, \"{}\")".format(punctuator, str))
     else:
         print(punctuator)
+
+# ************************************************************************* #

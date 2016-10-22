@@ -26,12 +26,14 @@ Optional 'macro' argument can be passed which generates lines in format:
 import sys
 from lib.parser import format_non_terminal, parse
 
+# ************************************************************************* #
+
 macroFormat = False
 
 if len(sys.argv) > 1:
     macroFormat = sys.argv[1] == "macro"
 
-rules = parse("shard.lex")
+rules = parse("shard-lex.def")
 keyword = format_non_terminal("KEYWORD")
 
 if not keyword in rules:
@@ -45,3 +47,5 @@ for keyword in keywords:
         print("KEYWORD({}, \"{}\")".format(keyword[0].capitalize(), keyword[0]))
     else:
         print(keyword[0])
+
+# ************************************************************************* #

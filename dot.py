@@ -20,8 +20,12 @@
 Generate DOT output from description file.
 """
 
+# ************************************************************************* #
+
 import sys
 from lib.parser import parse, is_non_terminal
+
+# ************************************************************************* #
 
 if len(sys.argv) < 2:
     print("Missing arguments: <filename>")
@@ -44,3 +48,5 @@ for line in set(lines):
     print(line + ";")
 
 print("}");
+
+# ************************************************************************* #
