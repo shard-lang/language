@@ -27,6 +27,7 @@ SPACE:
     0x20
     0x09
 
+# TOKEN: Comment
 COMMENT:
     BLOCK_COMMENT
     LINE_COMMENT
@@ -40,6 +41,9 @@ LINE_COMMENT:
 CHARACTERS:
     CHARACTER
     CHARACTER CHARACTERS
+
+CHARACTER:
+    UTF8_CHAR
 
 LETTER:
     'a'
@@ -95,6 +99,7 @@ LETTER:
     'Y'
     'Z'
 
+# TOKEN: Identifier
 IDENTIFIER:
     IDENTIFIER_START
     IDENTIFIER_START IDENTIFIER_CHARS
@@ -111,6 +116,7 @@ IDENTIFIER_CHAR:
     IDENTIFIER_START
     DECIMAL_DIGIT
 
+# TOKEN: StringLiteral
 STRING_LITERAL:
     '"' STRING_LITERAL_CHARACTERS '"'
 
@@ -137,6 +143,7 @@ ESCAPE_SEQUENCE:
     '\t'
     '\v'
 
+# TOKEN: CharLiteral
 CHAR_LITERAL:
     ''' CHAR_LITERAL_CHARACTER '''
 
@@ -144,6 +151,7 @@ CHAR_LITERAL_CHARACTER:
     CHARACTER
     ESCAPE_SEQUENCE
 
+# TOKEN: IntLiteral
 INT_LITERAL:
     DECIMAL_INTEGER
     BINARY_INTEGER
@@ -217,6 +225,7 @@ HEXADECIMAL_LETTER:
     'E'
     'F'
 
+# TOKEN: FloatLiteral
 FLOAT_LITERAL:
     DECIMAL_INTEGER '.'
     DECIMAL_INTEGER '.' DECIMAL_DIGITS
@@ -236,111 +245,187 @@ DECIMAL_EXPONENT_START:
     'e-'
     'E-'
 
+# PUNCTUATOR: SquareLeft
 SQUARE_LEFT:
     '['
 
+# PUNCTUATOR: SquareRight
 SQUARE_RIGHT:
     ']'
 
+# PUNCTUATOR: ParenLeft
 PAREN_LEFT:
     '('
 
+# PUNCTUATOR: ParenRight
 PAREN_RIGHT:
     ')'
 
+# PUNCTUATOR: BraceLeft
 BRACE_LEFT:
     '{'
 
+# PUNCTUATOR: BraceRight
 BRACE_RIGHT:
     '}'
 
+# PUNCTUATOR: Period
 PERIOD:
     '.'
 
+# PUNCTUATOR: Amp
 AMP:
     '&'
 
+# PUNCTUATOR: AmpEqual
+AMP_EQUAL:
+    '&='
+
+# PUNCTUATOR: AmpAmp
 AMP_AMP:
     '&&'
 
+# PUNCTUATOR: AmpAmpEqual
+AMP_AMP_EQUAL:
+    '&&='
+
+# PUNCTUATOR: Star
 STAR:
     '*'
 
+# PUNCTUATOR: StarEqual
 STAR_EQUAL:
     '*='
 
+# PUNCTUATOR: Plus
 PLUS:
     '+'
 
+# PUNCTUATOR: PlusPlus
 PLUS_PLUS:
     '++'
 
+# PUNCTUATOR: PlusEqual
 PLUS_EQUAL:
     '+='
 
+# PUNCTUATOR: MinusEqual
 MINUS:
     '-'
 
+# PUNCTUATOR: MinusMinus
 MINUS_MINUS:
     '--'
 
+# PUNCTUATOR: MinusEqual
 MINUS_EQUAL:
     '-='
 
+# PUNCTUATOR: Tilde
+TILDE:
+    '~'
+
+# PUNCTUATOR: Exclaim
 EXCLAIM:
     '!'
 
+# PUNCTUATOR: ExclaimEqual
 EXCLAIM_EQUAL:
     '!='
 
+# PUNCTUATOR: Slash
 SLASH:
     '/'
 
+# PUNCTUATOR: SlashEqual
 SLASH_EQUAL:
     '/='
 
+# PUNCTUATOR: Percent
 PERCENT:
     '%'
 
+# PUNCTUATOR: PercentEqual
 PERCENT_EQUAL:
     '%='
 
+# PUNCTUATOR: Less
 LESS:
     '<'
 
+# PUNCTUATOR: LessLess
+LESS_LESS:
+    '<<'
+
+# PUNCTUATOR: LessEqual
 LESS_EQUAL:
     '<='
 
+# PUNCTUATOR: LessLessEqual
+LESS_LESS_EQUAL:
+    '<<='
+
+# PUNCTUATOR: Greater
 GREATER:
     '>'
 
+# PUNCTUATOR: GreaterGreater
+GREATER_GREATER:
+    '>>'
+
+# PUNCTUATOR: GreaterEqual
 GREATER_EQUAL:
     '>='
 
+# PUNCTUATOR: GreaterGreaterEqual
+GREATER_GREATER_EQUAL:
+    '>>='
+
+# PUNCTUATOR: Caret
 CARET:
     '^'
 
+# PUNCTUATOR: CaretEqual
+CARET_EQUAL:
+    '^='
+
+# PUNCTUATOR: Pipe
+PIPE:
+    '|'
+
+# PUNCTUATOR: PipePipe
 PIPE_PIPE:
     '||'
 
+# PUNCTUATOR: PipeEqual
 PIPE_EQUAL:
     '|='
 
+# PUNCTUATOR: PipePipeEqual
+PIPE_PIPE_EQUAL:
+    '||='
+
+# PUNCTUATOR: Question
 QUESTION:
     '?'
 
+# PUNCTUATOR: Colon
 COLON:
     ':'
 
+# PUNCTUATOR: Semicolon
 SEMICOLON:
     ';'
 
+# PUNCTUATOR: Equal
 EQUAL:
     '='
 
+# PUNCTUATOR: EqualEqual
 EQUAL_EQUAL:
     '=='
 
+# PUNCTUATOR: Comma
 COMMA:
     ','
 
@@ -353,7 +438,9 @@ PUNCTUATOR:
     BRACE_RIGHT
     PERIOD
     AMP
+    AMP_EQUAL
     AMP_AMP
+    AMP_AMP_EQUAL
     STAR
     STAR_EQUAL
     PLUS
@@ -362,6 +449,7 @@ PUNCTUATOR:
     MINUS
     MINUS_MINUS
     MINUS_EQUAL
+    TILDE
     EXCLAIM
     EXCLAIM_EQUAL
     SLASH
@@ -369,12 +457,19 @@ PUNCTUATOR:
     PERCENT
     PERCENT_EQUAL
     LESS
+    LESS_LESS
     LESS_EQUAL
+    LESS_LESS_EQUAL
     GREATER
+    GREATER_GREATER
     GREATER_EQUAL
+    GREATER_GREATER_EQUAL
     CARET
+    CARET_EQUAL
+    PIPE
     PIPE_PIPE
     PIPE_EQUAL
+    PIPE_PIPE_EQUAL
     QUESTION
     COLON
     SEMICOLON
@@ -382,6 +477,7 @@ PUNCTUATOR:
     EQUAL_EQUAL
     COMMA
 
+# TOKEN: Keyword
 KEYWORD:
     'class'
     'public'
