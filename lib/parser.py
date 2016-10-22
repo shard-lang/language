@@ -83,6 +83,11 @@ def parse(filename):
             if not line or line.startswith("#"):
                 continue
 
+            if line.startswith("!include"):
+                filename2 = re.split(" ", line)[1]
+                rules.update(parse(filename2))
+                continue
+
             # Rule
             if line.endswith(":"):
                 if ruleName is not None:
