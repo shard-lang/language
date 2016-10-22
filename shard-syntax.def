@@ -1,0 +1,256 @@
+# ************************************************************************* #
+# This file is part of Shard.                                               #
+#                                                                           #
+# Shard is free software: you can redistribute it and/or modify             #
+# it under the terms of the GNU Affero General Public License as            #
+# published by the Free Software Foundation.                                #
+#                                                                           #
+# This program is distributed in the hope that it will be useful,           #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of            #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              #
+# GNU Affero General Public License for more details.                       #
+#                                                                           #
+# You should have received a copy of the GNU Affero General Public License  #
+# along with this program. If not, see <http://www.gnu.org/licenses/>.      #
+# ************************************************************************* #
+
+!include shard-lex.def
+
+# Special NULL literal which means no object.
+NULL_LITERAL:
+    'null'
+
+# Boolean type possible values.
+BOOL_LITERAL:
+    'true'
+    'false'
+
+# Constant literals
+LITERAL:
+    NULL_LITERAL
+    BOOL_LITERAL
+    INT_LITERAL
+    FLOAT_LITERAL
+    STRING_LITERAL
+    CHAR_LITERAL
+
+# Primary expression
+PRIMARY_EXPRESSION:
+    IDENTIFIER
+    LITERAL
+    PAREN_EXPRESSION
+
+# Subexpression surrounded by parenthesis.
+PAREN_EXPRESSION:
+    '(' EXPRESSION ')'
+
+# Operators for postix expression.
+POSTFIX_OPERATOR:
+    '++'
+    '--'
+
+# Optional postfix unary expression.
+POSTFIX_UNARY_EXPRESSION:
+    PRIMARY_EXPRESSION
+    POSTFIX_UNARY_EXPRESSION POSTFIX_OPERATOR
+
+# Operators for prefix expression.
+PREFIX_OPERATOR:
+    '++'
+    '--'
+    '+'
+    '-'
+    '!'
+
+# Optional prefix unary expression.
+PREFIX_UNARY_EXPRESSION:
+    POSTFIX_UNARY_EXPRESSION
+    PREFIX_OPERATOR POSTFIX_UNARY_EXPRESSION
+
+# Operators for multiplicative expression.
+MULTIPLICATIVE_OPERATOR:
+    '*'
+    '/'
+    '%'
+
+# Optional multiplicative expression.
+MULTIPLICATIVE_EXPRESSION:
+    PREFIX_UNARY_EXPRESSION
+    MULTIPLICATIVE_EXPRESSION MULTIPLICATIVE_OPERATOR PREFIX_UNARY_EXPRESSION
+
+# Operators for additive expression.
+ADDITIVE_OPERATOR:
+    '+'
+    '-'
+
+# Optional additive expression.
+ADDITIVE_EXPRESSION:
+    MULTIPLICATIVE_EXPRESSION
+    ADDITIVE_EXPRESSION ADDITIVE_OPERATOR MULTIPLICATIVE_EXPRESSION
+
+# Operators for relational expression.
+RELATIONAL_OPERATOR:
+    '=='
+    '!='
+    '<'
+    '>'
+    '<='
+    '>='
+
+# Optional relational expression.
+RELATIONAL_EXPRESSION:
+    ADDITIVE_EXPRESSION
+    ADDITIVE_EXPRESSION RELATIONAL_OPERATOR ADDITIVE_EXPRESSION
+
+# Optional conditional (ternary) expression.
+CONDITIONAL_EXPRESSION:
+    RELATIONAL_EXPRESSION
+    RELATIONAL_EXPRESSION '?' EXPRESSION ':' EXPRESSION
+
+# Operators for assignment expression.
+ASSIGNMENT_OPERATOR:
+    '='
+    '*='
+    '/='
+    '%='
+    '+='
+    '-='
+
+# Assignment expression.
+ASSIGNMENT_EXPRESSION:
+    PRIMARY_EXPRESSION ASSIGNMENT_OPERATOR EXPRESSION
+
+# Base expression.
+EXPRESSION:
+    CONDITIONAL_EXPRESSION
+    ASSIGNMENT_EXPRESSION
+
+# Base declaration
+DECLARATION:
+    VARIABLE_DECLARATION ';'
+    FUNCTION_DECLARATION
+    CLASS_DECLARATION
+
+# Variable declaration.
+VARIABLE_DECLARATION:
+    TYPE IDENTIFIER
+    TYPE IDENTIFIER '=' EXPRESSION
+
+# Possible variable types
+TYPE:
+    'var'
+    'auto'
+    'int'
+    'float'
+    'char'
+    'string'
+    TYPENAME
+
+# User defined type
+TYPENAME:
+    IDENTIFIER
+
+# Function declaration/definition
+FUNCTION_DECLARATION:
+    TYPE IDENTIFIER PARAMETERS FUNCTION_BODY
+
+# Parameters withing parenthesis
+PARAMETERS:
+    '(' ')'
+    '(' PARAMETER_LIST ')'
+
+# List of parameters
+PARAMETER_LIST:
+    PARAMETER
+    PARAMETER_LIST ',' PARAMETER
+
+# Function parameter
+PARAMETER:
+    VARIABLE_DECLARATION
+
+# Function body
+FUNCTION_BODY:
+    COMPOUND_STATEMENT
+
+# Declaration of class
+CLASS_DECLARATION:
+    'class' IDENTIFIER '{' DECLARATION_LIST '}'
+
+# Statements
+STATEMENT:
+    EXPRESSION_STATEMENT
+    DECLARATION_STATEMENT
+    COMPOUND_STATEMENT
+    IF_STATEMENT
+    WHILE_STATEMENT
+    DO_STATEMENT
+    FOR_STATEMENT
+    SWITCH_STATEMENT
+    CASE_STATEMENT
+    CONTINUE_STATEMENT
+    BREAK_STATEMENT
+    RETURN_STATEMENT
+
+# List of statements.
+STATEMENT_LIST:
+    STATEMENT
+    STATEMENT_LIST STATEMENT
+
+# Statement for expression.
+EXPRESSION_STATEMENT:
+    EXPRESSION ';'
+
+# Statement for declaration.
+DECLARATION_STATEMENT:
+    DECLARATION
+
+# Compound/block statement.
+COMPOUND_STATEMENT:
+    '{' STATEMENT_LIST '}'
+
+# If statement with optional else branch
+IF_STATEMENT:
+    'if' '(' EXPRESSION ')' STATEMENT
+    'if' '(' EXPRESSION ')' STATEMENT 'else' STATEMENT
+
+# While loop statement
+WHILE_STATEMENT:
+    'while' '(' EXPRESSION ')' STATEMENT
+
+# Do-while loop statement
+DO_STATEMENT:
+    'do' STATEMENT '(' EXPRESSION ')' ';'
+
+# For loop statement
+FOR_STATEMENT:
+    'for' '(' STATEMENT ';' ')' STATEMENT
+    'for' '(' STATEMENT EXPRESSION ';' ')' STATEMENT
+    'for' '(' STATEMENT ';' EXPRESSION ')' STATEMENT
+    'for' '(' STATEMENT EXPRESSION ';' EXPRESSION ')' STATEMENT
+
+SWITCH_STATEMENT:
+    'switch' '(' EXPRESSION ')' COMPOUND_STATEMENT
+
+CASE_STATEMENT:
+    'case' EXPRESSION ':' STATEMENT
+
+DEFAULT_STATEMENT:
+    'default' ':' STATEMENT
+
+CONTINUE_STATEMENT:
+    'continue' ';'
+
+BREAK_STATEMENT:
+    'break' ';'
+
+RETURN_STATEMENT:
+    'return' EXPRESSION ';'
+
+# List of declarations.
+DECLARATION_LIST:
+    DECLARATION
+    DECLARATION_LIST DECLARATION
+
+# Main module - entry point
+MODULE:
+    DECLARATION_LIST
