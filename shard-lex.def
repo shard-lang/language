@@ -241,6 +241,12 @@ DECIMAL_EXPONENT_START:
     'E+'
     'e-'
     'E-'
+    'p'
+    'P'
+    'p+'
+    'P+'
+    'p-'
+    'P-'
 
 # PUNCTUATOR: SquareLeft
 SQUARE_LEFT:
