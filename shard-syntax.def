@@ -34,7 +34,10 @@ LITERAL:
     STRING_LITERAL
     CHAR_LITERAL
 
-# Primary expression
+# variable
+# 10
+# 1e3
+# (x + y)
 PRIMARY_EXPRESSION:
     IDENTIFIER
     LITERAL
@@ -49,17 +52,44 @@ POSTFIX_OPERATOR:
     '++'
     '--'
 
-# Optional postfix unary expression.
+# variable
+# variable++
+# variable++++--++--++--
+# variable.member
+# variable.member.member
+# variable
 POSTFIX_UNARY_EXPRESSION:
     PRIMARY_EXPRESSION
     POSTFIX_UNARY_EXPRESSION POSTFIX_OPERATOR
-    POSTFIX_UNARY_EXPRESSION '.' IDENTIFIER
-    POSTFIX_UNARY_EXPRESSION '(' ')'
-    POSTFIX_UNARY_EXPRESSION '(' ARGUMENT_LIST ')'
+    MEMBER_ACCESS_EXPRESSION
+    FUNCTION_CALL_EXPRESSION
+    SUBSCRIPT_EXPRESSION
 
+# variable.member
+MEMBER_ACCESS_EXPRESSION:
+    POSTFIX_UNARY_EXPRESSION '.' IDENTIFIER
+
+# x = 10
+# x, y
+# x, y, z / 2 + 10
 ARGUMENT_LIST:
     EXPRESSION
     EXPRESSION ',' ARGUMENT_LIST
+
+# fn()
+# fn(x, y)
+# fn(10, 1, "value")
+# fn()()()()(true)
+FUNCTION_CALL_EXPRESSION:
+    POSTFIX_UNARY_EXPRESSION '(' ')'
+    POSTFIX_UNARY_EXPRESSION '(' ARGUMENT_LIST ')'
+
+# arr[]
+# arr[10]
+# arr[1, 3, 0]
+SUBSCRIPT_EXPRESSION:
+    POSTFIX_UNARY_EXPRESSION '[' ']'
+    POSTFIX_UNARY_EXPRESSION '[' ARGUMENT_LIST ']'
 
 # Operators for prefix expression.
 PREFIX_OPERATOR:
@@ -69,7 +99,9 @@ PREFIX_OPERATOR:
     '-'
     '!'
 
-# Optional prefix unary expression.
+# variable
+# --variable++
+# !false
 PREFIX_UNARY_EXPRESSION:
     POSTFIX_UNARY_EXPRESSION
     PREFIX_OPERATOR POSTFIX_UNARY_EXPRESSION
@@ -125,7 +157,7 @@ ASSIGNMENT_OPERATOR:
 
 # Assignment expression.
 ASSIGNMENT_EXPRESSION:
-    PRIMARY_EXPRESSION ASSIGNMENT_OPERATOR EXPRESSION
+    POSTFIX_UNARY_EXPRESSION ASSIGNMENT_OPERATOR EXPRESSION
 
 # Base expression.
 EXPRESSION:
