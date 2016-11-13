@@ -504,6 +504,9 @@ KEYWORD:
     'try'
     'catch'
     'throw'
+    'array'
+    'map'
+    'tuple'
 
 TOKEN:
     IDENTIFIER

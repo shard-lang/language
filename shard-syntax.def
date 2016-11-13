@@ -183,6 +183,9 @@ TYPE:
     'float'
     'char'
     'string'
+    'array'
+    'map'
+    'tuple'
     TYPENAME
 
 # User defined type
