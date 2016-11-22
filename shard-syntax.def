@@ -313,9 +313,15 @@ EXPRESSION_STATEMENT:
     ';'
     EXPRESSION ';'
 
+# Declaration access specifier
+ACCESS_SPECIFIER:
+    'public'
+    'protected'
+    'private'
+
 # Statement for declaration.
 DECLARATION_STATEMENT:
-    DECLARATION
+    ACCESS_SPECIFIER DECLARATION
 
 # Compound/block statement.
 COMPOUND_STATEMENT:
