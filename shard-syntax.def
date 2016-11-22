@@ -179,6 +179,7 @@ VARIABLE_DECLARATION:
 TYPE:
     'var'
     'auto'
+    'void'
     'int'
     'float'
     'char'
