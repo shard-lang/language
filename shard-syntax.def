@@ -388,6 +388,6 @@ DECLARATION_LIST:
     DECLARATION
     DECLARATION_LIST DECLARATION
 
-# Main module - entry point
-MODULE:
+# Compilation unit - entry point
+COMPILATION_UNIT:
     DECLARATION_LIST
