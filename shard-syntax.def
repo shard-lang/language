@@ -25,6 +25,32 @@ BOOL_LITERAL:
     'true'
     'false'
 
+# Array of values literal
+ARRAY_LITERAL:
+    '[' ']'
+    '[' ARGUMENT_LIST ']'
+
+# Associative array literal
+# {"one": 1, "two": 2}
+# {name1(): value1(), name2(): value2()}
+MAP_LITERAL:
+    '{' KEY_VALUE_PAIRS '}'
+
+# List of key-value pairs
+KEY_VALUE_PAIRS:
+    KEY_VALUE_PAIR
+    KEY_VALUE_PAIR ',' KEY_VALUE_PAIRS
+
+# Key-value pair
+# "one": 1
+KEY_VALUE_PAIR:
+    EXPRESSION ':' EXPRESSION
+
+# Tule literal
+# {1, "Hello", 4.3}
+TUPLE_LITERAL:
+    '{' ARGUMENT_LIST '}'
+
 # Constant literals
 LITERAL:
     NULL_LITERAL
@@ -33,6 +59,9 @@ LITERAL:
     FLOAT_LITERAL
     STRING_LITERAL
     CHAR_LITERAL
+    ARRAY_LITERAL
+    MAP_LITERAL
+    TUPLE_LITERAL
 
 # variable
 # 10
