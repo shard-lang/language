@@ -206,6 +206,11 @@ VARIABLE_DECLARATION:
 
 # Possible variable types
 TYPE:
+    TYPE_BASE
+    TYPE_BASE TYPE_PARAMETERS
+
+# Type bases
+TYPE_BASE:
     'var'
     'auto'
     'void'
@@ -217,6 +222,27 @@ TYPE:
     'map'
     'tuple'
     TYPENAME
+
+# Type parameters
+# <int, 5>
+# <int, float, string>
+TYPE_PARAMETERS:
+    '<' TYPE_PARAMETER_LIST '>'
+
+# List of type parameters
+# int, 5
+# int, float, string
+TYPE_PARAMETER_LIST:
+    TYPE_PARAMETER
+    TYPE_PARAMETER ',' TYPE_PARAMETER_LIST
+
+# Type parameter
+# 5
+# int
+# void
+TYPE_PARAMETER:
+    INT_LITERAL
+    TYPE
 
 # User defined type
 TYPENAME:
