@@ -239,6 +239,7 @@ STATEMENT_LIST:
 
 # Statement for expression.
 EXPRESSION_STATEMENT:
+    ';'
     EXPRESSION ';'
 
 # Statement for declaration.
@@ -247,6 +248,7 @@ DECLARATION_STATEMENT:
 
 # Compound/block statement.
 COMPOUND_STATEMENT:
+    '{' '}'
     '{' STATEMENT_LIST '}'
 
 # If statement with optional else branch
