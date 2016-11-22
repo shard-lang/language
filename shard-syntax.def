@@ -277,8 +277,10 @@ CASE_STATEMENT_LIST:
     CASE_STATEMENT_LIST CASE_STATEMENT
 
 CASE_STATEMENT:
-    'case' EXPRESSION ':' STATEMENT
-    'default' ':' STATEMENT
+    'case' EXPRESSION ':'
+    'case' EXPRESSION ':' STATEMENT_LIST
+    'default' ':'
+    'default' ':' STATEMENT_LIST
 
 CONTINUE_STATEMENT:
     'continue' ';'
