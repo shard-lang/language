@@ -30,25 +30,16 @@ PAREN_EXPRESSION:
 
 # Unary expressions
 UNARY_EXPRESSION:
-    PREFIX_UNARY_EXPRESSION
-    POSTFIX_UNARY_EXPRESSION
+    EXPRESSION
+    OPERATOR EXPRESSION
+    EXPRESSION OPERATOR
 
+# Expression operator
 OPERATOR:
     OTHER
     OPERATOR OTHER
 
-# <expression> <operator>
-POSTFIX_UNARY_EXPRESSION:
-    EXPRESSION OPERATOR
-
-# <operator> <expression>
-PREFIX_UNARY_EXPRESSION:
-    OPERATOR EXPRESSION
-
 # <expression> <operator> <expression>
-# a + 5
-# a.member
-# a = 10
 BINARY_EXPRESSION:
     EXPRESSION OPERATOR EXPRESSION
 
@@ -58,12 +49,6 @@ BINARY_EXPRESSION:
 CALL_EXPRESSION:
     EXPRESSION '(' ')'
     EXPRESSION '(' ARGUMENT_LIST ')'
-
-# <expression> '[' [ <argument_list> ] ']'
-# fn()
-# fn(1, 2)
-SUBSCRIPT_EXPRESSION:
-    EXPRESSION '[' ARGUMENT_LIST ']'
 
 # x = 10
 # x, y
@@ -90,7 +75,6 @@ RESTRICTED_DECLARATION:
 # Declaration access specifier
 ACCESS_SPECIFIER:
     'public'
-    'protected'
     'private'
 
 # Base declaration
