@@ -73,6 +73,7 @@ def parse(filename):
     rules = {}
     ruleName = None
     ruleItems = None
+    extend = False
 
     # Foreach lines
     with open(filename, 'r') as file:
@@ -91,10 +92,23 @@ def parse(filename):
             # Rule
             if line.endswith(":"):
                 if ruleName is not None:
-                    rules[format_non_terminal(ruleName)] = ruleItems
-                    ruleName = None
+                    if extend:
+                        rules[format_non_terminal(ruleName)].extend(ruleItems)
+                    else:
+                        rules[format_non_terminal(ruleName)] = ruleItems
 
-                ruleName = line[:-1]
+                    ruleName = None
+                    extend = False
+
+                # Rule name
+                name = line[:-1]
+
+                # Extend rule
+                if line.startswith('+'):
+                    extend = True
+                    name = name[1:]
+
+                ruleName = name
                 ruleItems = []
             else:
                 ruleItems.append(_format_items(re.split(" ", line)))
