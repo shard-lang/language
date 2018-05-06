@@ -16,7 +16,8 @@
 
 import random
 from copy import copy
-from parser import is_non_terminal, format_non_terminal
+import numpy as np
+from .parser import is_non_terminal, format_non_terminal
 
 # ************************************************************************* #
 
@@ -56,6 +57,39 @@ def get_random_unicode():
 
 # ************************************************************************* #
 
+def get_random_other():
+    """
+    http://stackoverflow.com/a/21666621
+    """
+
+    try:
+        get_char = unichr
+    except NameError:
+        get_char = chr
+
+    # Update this to include code point ranges to be sampled
+    include_ranges = [
+        ( 0x0021, 0x00B7 ),
+    ]
+
+    alphabet = [
+        get_char(code_point) for current_range in include_ranges
+            for code_point in range(current_range[0], current_range[1] + 1)
+    ]
+
+    return random.choice(alphabet)
+
+# ************************************************************************* #
+
+def calculate_probabilities(items):
+    counts = [1 / len(i) for i in items]
+    total = sum(counts)
+    probabilities = [i / total for i in counts]
+
+    return probabilities
+
+# ************************************************************************* #
+
 def generate(rules, start):
     """
     Generate random sequence according to given rules.
@@ -69,8 +103,10 @@ def generate(rules, start):
     dQuote = False
     stack = [format_non_terminal(start)]
 
-    while len(stack) > 0:
+    while len(stack) > 0 and len(stack) < 1000:
         item = stack.pop()
+
+        print(item)
 
         # Terminal
         if is_non_terminal(item):
@@ -87,8 +123,28 @@ def generate(rules, start):
                     c = "\\\\";
 
                 res = res + c
+            elif item == format_non_terminal("OTHER_CHAR"):
+                c = get_random_other()
+
+                # Escape quote charaters
+                if c == '"' and dQuote:
+                    c = '\\"'
+                elif c == "'" and sQuote:
+                    c = "\\'"
+                elif c == "\\":
+                    c = "\\\\";
+
+                res = res + c
+            elif item == format_non_terminal("__UNKNOWN__"):
+                res = res + '???'
             else:
-                items = copy(random.choice(rules[item]))
+                # Calculate items probabilities
+                probabilities = calculate_probabilities(rules[item])
+
+                # Choose one rule
+                key = np.random.choice(list(range(len(rules[item]))), p = probabilities)
+
+                items = copy(rules[item][key])
                 items.reverse()
                 stack = stack + items
         else:
