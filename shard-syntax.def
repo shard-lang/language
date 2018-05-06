@@ -16,87 +16,54 @@
 
 !include shard-lex.def
 
-# Special NULL literal which means no object.
-NULL_LITERAL:
-    'null'
-
-# Boolean type possible values.
-BOOL_LITERAL:
-    'true'
-    'false'
-
-# Array of values literal
-ARRAY_LITERAL:
-    '[' ']'
-    '[' ARGUMENT_LIST ']'
-
-# Associative array literal
-# {"one": 1, "two": 2}
-# {name1(): value1(), name2(): value2()}
-MAP_LITERAL:
-    '{' KEY_VALUE_PAIRS '}'
-
-# List of key-value pairs
-KEY_VALUE_PAIRS:
-    KEY_VALUE_PAIR
-    KEY_VALUE_PAIR ',' KEY_VALUE_PAIRS
-
-# Key-value pair
-# "one": 1
-KEY_VALUE_PAIR:
-    EXPRESSION ':' EXPRESSION
-
-# Tule literal
-# {1, "Hello", 4.3}
-TUPLE_LITERAL:
-    '{' ARGUMENT_LIST '}'
+# Integer literal
+INT_LITERAL:
+    NUMBER_LITERAL
 
 # Constant literals
 LITERAL:
-    NULL_LITERAL
-    BOOL_LITERAL
     INT_LITERAL
-    FLOAT_LITERAL
-    STRING_LITERAL
-    CHAR_LITERAL
-    ARRAY_LITERAL
-    MAP_LITERAL
-    TUPLE_LITERAL
-
-# variable
-# 10
-# 1e3
-# (x + y)
-PRIMARY_EXPRESSION:
-    IDENTIFIER
-    LITERAL
-    PAREN_EXPRESSION
 
 # Subexpression surrounded by parenthesis.
 PAREN_EXPRESSION:
     '(' EXPRESSION ')'
 
-# Operators for postix expression.
-POSTFIX_OPERATOR:
-    '++'
-    '--'
+# Unary expressions
+UNARY_EXPRESSION:
+    PREFIX_UNARY_EXPRESSION
+    POSTFIX_UNARY_EXPRESSION
 
-# variable
-# variable++
-# variable++++--++--++--
-# variable.member
-# variable.member.member
-# variable
+OPERATOR:
+    OTHER
+    OPERATOR OTHER
+
+# <expression> <operator>
 POSTFIX_UNARY_EXPRESSION:
-    PRIMARY_EXPRESSION
-    POSTFIX_UNARY_EXPRESSION POSTFIX_OPERATOR
-    MEMBER_ACCESS_EXPRESSION
-    FUNCTION_CALL_EXPRESSION
-    SUBSCRIPT_EXPRESSION
+    EXPRESSION OPERATOR
 
-# variable.member
-MEMBER_ACCESS_EXPRESSION:
-    POSTFIX_UNARY_EXPRESSION '.' IDENTIFIER
+# <operator> <expression>
+PREFIX_UNARY_EXPRESSION:
+    OPERATOR EXPRESSION
+
+# <expression> <operator> <expression>
+# a + 5
+# a.member
+# a = 10
+BINARY_EXPRESSION:
+    EXPRESSION OPERATOR EXPRESSION
+
+# <expression> '(' [ <argument_list> ] ')'
+# fn()
+# fn(1, 2)
+CALL_EXPRESSION:
+    EXPRESSION '(' ')'
+    EXPRESSION '(' ARGUMENT_LIST ')'
+
+# <expression> '[' [ <argument_list> ] ']'
+# fn()
+# fn(1, 2)
+SUBSCRIPT_EXPRESSION:
+    EXPRESSION '[' ARGUMENT_LIST ']'
 
 # x = 10
 # x, y
@@ -105,213 +72,20 @@ ARGUMENT_LIST:
     EXPRESSION
     EXPRESSION ',' ARGUMENT_LIST
 
-# fn()
-# fn(x, y)
-# fn(10, 1, "value")
-# fn()()()()(true)
-# fn(x: 10, 11)
-FUNCTION_CALL_EXPRESSION:
-    POSTFIX_UNARY_EXPRESSION '(' ')'
-    POSTFIX_UNARY_EXPRESSION '(' FUNCTION_CALL_ARGUMENT_LIST ')'
-
-# Function call argument list
-FUNCTION_CALL_ARGUMENT_LIST:
-    FUNCTION_CALL_ARGUMENT
-    FUNCTION_CALL_ARGUMENT ',' FUNCTION_CALL_ARGUMENT_LIST
-
-# Function call
-# 10
-# x: 10
-FUNCTION_CALL_ARGUMENT:
-    EXPRESSION
-    IDENTIFIER ':' EXPRESSION
-
-# arr[]
-# arr[10]
-# arr[1, 3, 0]
-SUBSCRIPT_EXPRESSION:
-    POSTFIX_UNARY_EXPRESSION '[' ']'
-    POSTFIX_UNARY_EXPRESSION '[' ARGUMENT_LIST ']'
-
-# Operators for prefix expression.
-PREFIX_OPERATOR:
-    '++'
-    '--'
-    '+'
-    '-'
-    '!'
-
-# variable
-# --variable++
-# !false
-PREFIX_UNARY_EXPRESSION:
-    POSTFIX_UNARY_EXPRESSION
-    PREFIX_OPERATOR POSTFIX_UNARY_EXPRESSION
-
-# Operators for multiplicative expression.
-MULTIPLICATIVE_OPERATOR:
-    '*'
-    '/'
-    '%'
-
-# Optional multiplicative expression.
-MULTIPLICATIVE_EXPRESSION:
-    PREFIX_UNARY_EXPRESSION
-    MULTIPLICATIVE_EXPRESSION MULTIPLICATIVE_OPERATOR PREFIX_UNARY_EXPRESSION
-
-# Operators for additive expression.
-ADDITIVE_OPERATOR:
-    '+'
-    '-'
-
-# Optional additive expression.
-ADDITIVE_EXPRESSION:
-    MULTIPLICATIVE_EXPRESSION
-    ADDITIVE_EXPRESSION ADDITIVE_OPERATOR MULTIPLICATIVE_EXPRESSION
-
-# Operators for relational expression.
-RELATIONAL_OPERATOR:
-    '=='
-    '!='
-    '<'
-    '>'
-    '<='
-    '>='
-
-# Optional relational expression.
-RELATIONAL_EXPRESSION:
-    ADDITIVE_EXPRESSION
-    ADDITIVE_EXPRESSION RELATIONAL_OPERATOR ADDITIVE_EXPRESSION
-
-# Optional conditional (ternary) expression.
-CONDITIONAL_EXPRESSION:
-    RELATIONAL_EXPRESSION
-    RELATIONAL_EXPRESSION '?' EXPRESSION ':' EXPRESSION
-
-# Operators for assignment expression.
-ASSIGNMENT_OPERATOR:
-    '='
-    '*='
-    '/='
-    '%='
-    '+='
-    '-='
-
-# Assignment expression.
-ASSIGNMENT_EXPRESSION:
-    POSTFIX_UNARY_EXPRESSION ASSIGNMENT_OPERATOR EXPRESSION
-
 # Base expression.
 EXPRESSION:
-    CONDITIONAL_EXPRESSION
-    ASSIGNMENT_EXPRESSION
-
-# Base declaration
-DECLARATION:
-    VARIABLE_DECLARATION ';'
-    FUNCTION_DECLARATION
-    CLASS_DECLARATION
-
-# Variable declaration.
-VARIABLE_DECLARATION:
-    TYPE IDENTIFIER
-    TYPE IDENTIFIER '=' EXPRESSION
-
-# Possible variable types
-TYPE:
-    TYPE_BASE
-    TYPE_BASE TYPE_PARAMETERS
-
-# Type bases
-TYPE_BASE:
-    'var'
-    'auto'
-    'void'
-    'int'
-    'float'
-    'char'
-    'string'
-    'array'
-    'map'
-    'tuple'
-    TYPENAME
-
-# Type parameters
-# <int, 5>
-# <int, float, string>
-TYPE_PARAMETERS:
-    '<' TYPE_PARAMETER_LIST '>'
-
-# List of type parameters
-# int, 5
-# int, float, string
-TYPE_PARAMETER_LIST:
-    TYPE_PARAMETER
-    TYPE_PARAMETER ',' TYPE_PARAMETER_LIST
-
-# Type parameter
-# 5
-# int
-# void
-TYPE_PARAMETER:
-    INT_LITERAL
-    TYPE
-
-# User defined type
-TYPENAME:
     IDENTIFIER
+    LITERAL
+    PAREN_EXPRESSION
+    UNARY_EXPRESSION
+    BINARY_EXPRESSION
+    CALL_EXPRESSION
+    SUBSCRIPT_EXPRESSION
 
-# Function declaration/definition
-FUNCTION_DECLARATION:
-    TYPE IDENTIFIER PARAMETERS FUNCTION_BODY
-
-# Parameters withing parenthesis
-PARAMETERS:
-    '(' ')'
-    '(' PARAMETER_LIST ')'
-
-# List of parameters
-PARAMETER_LIST:
-    PARAMETER
-    PARAMETER_LIST ',' PARAMETER
-
-# Function parameter
-PARAMETER:
-    VARIABLE_DECLARATION
-
-# Function body
-FUNCTION_BODY:
-    COMPOUND_STATEMENT
-
-# Declaration of class
-CLASS_DECLARATION:
-    'class' IDENTIFIER '{' DECLARATION_LIST '}'
-
-# Statements
-STATEMENT:
-    EXPRESSION_STATEMENT
-    DECLARATION_STATEMENT
-    COMPOUND_STATEMENT
-    IF_STATEMENT
-    WHILE_STATEMENT
-    DO_WHILE_STATEMENT
-    FOR_STATEMENT
-    SWITCH_STATEMENT
-    CONTINUE_STATEMENT
-    BREAK_STATEMENT
-    RETURN_STATEMENT
-    TRY_CATCH_STATEMENT
-    THROW_STATEMENT
-
-# List of statements.
-STATEMENT_LIST:
-    STATEMENT
-    STATEMENT_LIST STATEMENT
-
-# Statement for expression.
-EXPRESSION_STATEMENT:
-    ';'
-    EXPRESSION ';'
+# Declaration with access specifier
+RESTRICTED_DECLARATION:
+    DECLARATION
+    ACCESS_SPECIFIER DECLARATION
 
 # Declaration access specifier
 ACCESS_SPECIFIER:
@@ -319,75 +93,54 @@ ACCESS_SPECIFIER:
     'protected'
     'private'
 
+# Base declaration
+# All declarations starts with an identifier with is
+# used to determine which type of declaration should be
+# parsed.
+# This allows the parser extensions
+DECLARATION:
+    IDENTIFIER __UNKNOWN__
+
+# Statements
+# As declarations new statements can be added to the parser.
+# All statements begins with identifier and parser can decide
+# with statements should parse according to this identifier.
+# There are some exceptions:
+#  - compound: starts with '{'
+#  - declaration: identifier is declaration identifier
+#    so when is not known, parser should try declarations.
+#  - expression: unknown identifier (probably variable/constant name)
+#    or something other.
+STATEMENT:
+    EXPRESSION_STATEMENT
+    DECLARATION_STATEMENT
+    COMPOUND_STATEMENT
+    IDENTIFIER __UNKNOWN__
+
+# List of statements
+STATEMENT_LIST:
+    STATEMENT
+    STATEMENT_LIST STATEMENT
+
+# Statement for expression
+EXPRESSION_STATEMENT:
+    ';'
+    EXPRESSION ';'
+
 # Statement for declaration.
 DECLARATION_STATEMENT:
-    ACCESS_SPECIFIER DECLARATION
+    DECLARATION
 
 # Compound/block statement.
 COMPOUND_STATEMENT:
     '{' '}'
     '{' STATEMENT_LIST '}'
 
-# If statement with optional else branch
-IF_STATEMENT:
-    'if' '(' EXPRESSION ')' STATEMENT
-    'if' '(' EXPRESSION ')' STATEMENT 'else' STATEMENT
-
-# While loop statement
-WHILE_STATEMENT:
-    'while' '(' EXPRESSION ')' STATEMENT
-
-# Do-while loop statement
-DO_WHILE_STATEMENT:
-    'do' STATEMENT 'while' '(' EXPRESSION ')' ';'
-
-# For loop statement
-FOR_STATEMENT:
-    'for' '(' STATEMENT ';' ')' STATEMENT
-    'for' '(' STATEMENT EXPRESSION ';' ')' STATEMENT
-    'for' '(' STATEMENT ';' EXPRESSION ')' STATEMENT
-    'for' '(' STATEMENT EXPRESSION ';' EXPRESSION ')' STATEMENT
-
-SWITCH_STATEMENT:
-    'switch' '(' EXPRESSION ')' '{' CASE_STATEMENT_LIST '}'
-
-CASE_STATEMENT_LIST:
-    CASE_STATEMENT
-    CASE_STATEMENT_LIST CASE_STATEMENT
-
-CASE_STATEMENT:
-    'case' EXPRESSION ':'
-    'case' EXPRESSION ':' STATEMENT_LIST
-    'default' ':'
-    'default' ':' STATEMENT_LIST
-
-CONTINUE_STATEMENT:
-    'continue' ';'
-
-BREAK_STATEMENT:
-    'break' ';'
-
-RETURN_STATEMENT:
-    'return' EXPRESSION ';'
-
-TRY_CATCH_STATEMENT:
-    'try' COMPOUND_STATEMENT CATCH_STATEMENTS
-
-CATCH_STATEMENTS:
-    CATCH_STATEMENT
-    CATCH_STATEMENT CATCH_STATEMENTS
-
-CATCH_STATEMENT:
-    'catch' '(' TYPE IDENTIFIER ')' COMPOUND_STATEMENT
-
-THROW_STATEMENT:
-    'throw' EXPRESSION ';'
-
 # List of declarations.
 DECLARATION_LIST:
     DECLARATION
     DECLARATION_LIST DECLARATION
 
-# Compilation unit - entry point
-COMPILATION_UNIT:
+# Source unit - entry point
+SOURCE:
     DECLARATION_LIST
