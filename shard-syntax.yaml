@@ -132,6 +132,19 @@ nodes:
     - DECLARATION
     - [ DECLARATION_LIST, DECLARATION ]
 
+  MODULE_NAME:
+    - IDENTIFIER
+    - [ MODULE_NAME, ".", IDENTIFIER ]
+
+  USE_STATEMENT:
+    - [ "use", MODULE_NAME, ";" ]
+
+  # List of module usages
+  USE_STATEMENTS:
+    - USE_STATEMENT
+    - [ USE_STATEMENTS, USE_STATEMENT ]
+
   # Source unit - entry point
   SOURCE:
+    - USE_STATEMENTS
     - DECLARATION_LIST
