@@ -23,7 +23,7 @@ Generate DOT output from description file.
 # ************************************************************************* #
 
 import sys
-from lib.parser import parse, is_non_terminal
+from lib.parser import parseFile, Rule
 
 # ************************************************************************* #
 
@@ -31,16 +31,25 @@ if len(sys.argv) < 2:
     print("Missing arguments: <filename>")
     exit(-1)
 
-rules = parse(sys.argv[1])
+desc = parseFile(sys.argv[1])
+
 lines = []
 
+for token in desc.tokens:
+    lines.append("  Token -> " + token.name)
+
+    if token.name != token.rule.name:
+        lines.append("  " + token.name + " -> " + token.rule.name)
+
 # Rules
-for rule, items in rules.items():
-    lines.append("  " + rule[1:])
-    for item in items:
+for rule in desc.rules:
+    lines.append("  " + rule.name)
+    for item in rule.rules:
         for item2 in item:
-            if is_non_terminal(item2):
-                lines.append("  " + rule[1:] + " -> " + item2[1:])
+            if isinstance(item2, Rule):
+                lines.append("  " + rule.name + " -> " + item2.name)
+            #else:
+            #    lines.append("  " + rule.name + " -> \"" + item2 + "\"")
 
 print("digraph {");
 

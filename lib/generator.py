@@ -16,12 +16,11 @@
 
 import random
 from copy import copy
-import numpy as np
-from .parser import is_non_terminal, format_non_terminal
+from .parser import Rule, Token, Node
 
 # ************************************************************************* #
 
-def get_random_unicode():
+def get_random_unicode() -> str:
     """
     http://stackoverflow.com/a/21666621
     """
@@ -57,7 +56,7 @@ def get_random_unicode():
 
 # ************************************************************************* #
 
-def get_random_other():
+def get_random_other() -> str:
     """
     http://stackoverflow.com/a/21666621
     """
@@ -69,7 +68,11 @@ def get_random_other():
 
     # Update this to include code point ranges to be sampled
     include_ranges = [
-        ( 0x0021, 0x00B7 ),
+        ( 0x0021, 0x0021 ),
+        ( 0x0023, 0x0026 ),
+        ( 0x0028, 0x007E ),
+        ( 0x00A1, 0x00AC ),
+        ( 0x00AE, 0x00FF ),
     ]
 
     alphabet = [
@@ -81,96 +84,71 @@ def get_random_other():
 
 # ************************************************************************* #
 
-def calculate_probabilities(items):
-    counts = [1 / len(i) for i in items]
-    total = sum(counts)
-    probabilities = [i / total for i in counts]
+def generate_token(token: Token, limit: int = 1000) -> str:
+    """
+    Generate token string.
+    """
 
-    return probabilities
+    res = []
+    stack = [token.rule]
+
+    while len(stack) > 0 and len(stack) < limit:
+        item = stack.pop()
+
+        if isinstance(item, Rule):
+
+            if len(item.rules) == 0:
+                raise RuntimeError("Incomplete rule '{}' specification".format(item.name))
+
+            # Choose one rule
+            items = random.choice(item.rules)
+
+            items = items.copy()
+            items.reverse()
+            stack = stack + items
+        else:
+            if item == "UTF8_CHAR":
+                c = get_random_unicode()
+                res.append(c)
+            elif item == "OTHER_CHAR":
+                c = get_random_other()
+                res.append(c)
+            else:
+                res.append(item)
+
+    return ''.join(res)
 
 # ************************************************************************* #
 
-def generate(rules, start):
+def generate_node(node: Node, limit: int = 1000) -> str:
     """
-    Generate random sequence according to given rules.
-
-    rules: A dictionary of rules.
-    start: Starting rule name.
+    Generate node string.
     """
 
-    res = ""
-    sQuote = False
-    dQuote = False
-    stack = [format_non_terminal(start)]
+    res = []
+    stack = [node]
 
-    while len(stack) > 0 and len(stack) < 1000:
+    while len(stack) > 0 and len(stack) < limit:
         item = stack.pop()
 
         print(item)
 
-        # Terminal
-        if is_non_terminal(item):
-            # Special placeholder
-            if item == format_non_terminal("UTF8_CHAR"):
-                c = get_random_unicode()
+        if isinstance(item, Node):
 
-                # Escape quote charaters
-                if c == '"' and dQuote:
-                    c = '\\"'
-                elif c == "'" and sQuote:
-                    c = "\\'"
-                elif c == "\\":
-                    c = "\\\\";
+            if len(item.tokens) == 0:
+                raise RuntimeError("Incomplete node '{}' specification".format(item.name))
 
-                res = res + c
-            elif item == format_non_terminal("OTHER_CHAR"):
-                c = get_random_other()
+            # Choose one rule
+            items = random.choice(item.tokens)
 
-                # Escape quote charaters
-                if c == '"' and dQuote:
-                    c = '\\"'
-                elif c == "'" and sQuote:
-                    c = "\\'"
-                elif c == "\\":
-                    c = "\\\\";
-
-                res = res + c
-            elif item == format_non_terminal("__UNKNOWN__"):
-                res = res + '???'
-            else:
-                # Calculate items probabilities
-                probabilities = calculate_probabilities(rules[item])
-
-                # Choose one rule
-                key = np.random.choice(list(range(len(rules[item]))), p = probabilities)
-
-                items = copy(rules[item][key])
-                items.reverse()
-                stack = stack + items
+            items = items.copy()
+            items.reverse()
+            stack = stack + items
+        elif isinstance(item, Token):
+            res.append(generate_token(item))
         else:
-            if item == "'":
-                sQuote = not sQuote;
-            elif item =='"':
-                dQuote = not dQuote;
+            res.append(item)
 
-            res = res + item
-
-    return res
-
-# ************************************************************************* #
-
-if __name__ == "__main__":
-    import sys
-    import pprint
-    from parser import parse
-
-    if len(sys.argv) < 3:
-        print("Missing arguments: <filename> <start>")
-        exit(-1)
-
-    str = generate(parse(sys.argv[1]), sys.argv[2])
-
-    #print(":".join("{:02x}".format(ord(c)) for c in str))
-    print(str)
+    return ' '.join(res)
 
 # ************************************************************************* #
