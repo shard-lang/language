@@ -14,32 +14,39 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.      #
 # ************************************************************************* #
 
-!include shard-syntax.def
+includes:
+  - shard-syntax.yaml
 
-TYPE:
-    IDENTIFIER
+nodes:
+  TYPE:
+    - IDENTIFIER
 
-VARIABLE_DECLARATION:
-    'var' TYPE IDENTIFIER ';'
-    'var' TYPE IDENTIFIER '=' EXPRESSION ';'
+  VARIABLE_DECLARATION:
+    - [ "var", IDENTIFIER, ";" ]
+    - [ "var", IDENTIFIER, "=", EXPRESSION, ";" ]
 
-CONSTANT_DECLARATION:
-    'const' TYPE IDENTIFIER '=' EXPRESSION ';'
+  CONSTANT_DECLARATION:
+    - [ "const", IDENTIFIER, "=", EXPRESSION, ";" ]
 
-FUNCTION_DECLARATION:
-    'func' TYPE IDENTIFIER '(' ')' COMPOUND_STATEMENT
-    'func' TYPE IDENTIFIER '(' PARAMETER_LIST ')' COMPOUND_STATEMENT
+  FUNCTION_DECLARATION:
+    - ["func", IDENTIFIER, PARAMETERS, COMPOUND_STATEMENT ]
 
-PARAMETER_LIST:
-    PARAMETER
-    PARAMETER_LIST PARAMETER
+  PARAMETERS:
+    - [ "(", ")" ]
+    - [ "(", PARAMETER_LIST, ")" ]
 
-PARAMETER:
-    TYPE IDENTIFIER
-    TYPE IDENTIFIER '=' EXPRESSION
+  PARAMETER_LIST:
+    - PARAMETER
+    - [ PARAMETER_LIST, PARAMETER ]
 
-# Extend declarations
-+DECLARATION:
-    VARIABLE_DECLARATION
-    CONSTANT_DECLARATION
-    FUNCTION_DECLARATION
+  PARAMETER:
+    - [ IDENTIFIER ]
+    - [ IDENTIFIER, "=", EXPRESSION ]
+
+  # Extend declarations
+  DECLARATION:
+    - VARIABLE_DECLARATION
+    - CONSTANT_DECLARATION
+    - FUNCTION_DECLARATION
+
+# ************************************************************************* #
