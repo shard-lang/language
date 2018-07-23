@@ -102,10 +102,13 @@ nodes:
   #    so when is not known, parser should try declarations.
   #  - expression: unknown identifier (probably variable/constant name)
   #    or something other.
+  #  - use: special statement which is used to import other modules and
+  #    even extend parser with desired functionality.
   STATEMENT:
     - EXPRESSION_STATEMENT
     - DECLARATION_STATEMENT
     - COMPOUND_STATEMENT
+    - USE_STATEMENT
     #- [ IDENTIFIER, __UNKNOWN__ ]
 
   # List of statements
@@ -139,12 +142,6 @@ nodes:
   USE_STATEMENT:
     - [ "use", MODULE_NAME, ";" ]
 
-  # List of module usages
-  USE_STATEMENTS:
-    - USE_STATEMENT
-    - [ USE_STATEMENTS, USE_STATEMENT ]
-
   # Source unit - entry point
   SOURCE:
-    - USE_STATEMENTS
     - DECLARATION_LIST
