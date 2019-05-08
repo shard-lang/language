@@ -145,16 +145,11 @@ rules:
   ESCAPE_SEQUENCE:
     - "\\'"
     - "\\\""
-    - "\\?"
     - "\\\\"
     - "\\0"
-    - "\\a"
-    - "\\b"
-    - "\\f"
     - "\\n"
     - "\\r"
     - "\\t"
-    - "\\v"
 
   # TOKEN: CharLiteral
   CHAR_LITERAL:
@@ -179,6 +174,7 @@ tokens:
   NUMBER_LITERAL: NUMBER_LITERAL
   OTHER: OTHER
   COMMENT: COMMENT
+  EOL: EOL
   WHITE_SPACE: WHITE_SPACE
 
 # ************************************************************************* #
